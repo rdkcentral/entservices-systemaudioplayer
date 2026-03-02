@@ -477,7 +477,7 @@ namespace Plugin {
     {
         string data;
         params.ToString(data);
-        Core::IWorkerPool::Instance().Submit(Job::Create(this, event, std::move(data));
+        Core::IWorkerPool::Instance().Submit(Job::Create(this, event, std::move(data)));
     }
 
     void SystemAudioPlayerImplementation::Dispatch(Event event, string data)
