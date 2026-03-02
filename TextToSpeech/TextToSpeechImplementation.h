@@ -52,7 +52,7 @@ namespace Plugin {
              Job(TextToSpeechImplementation *tts, Event event,string callsign,JsonValue &params)
                 : _tts(tts)
                 , _event(event)
-                , _callsign(callsign)
+                , _callsign(std::move(callsign))
                 , _params(params) {
                 if (_tts != nullptr) {
                     _tts->AddRef();
