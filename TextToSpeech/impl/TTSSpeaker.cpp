@@ -773,6 +773,7 @@ void TTSSpeaker::resetPipeline() {
     // Destroy pipeline outside lock if needed
     if(needsDestroy) {
         destroyPipeline();
+        pipelineExists = false;
     } else if(pipelineExists && pipeline) {
         // If pipeline is present and not destroyed, bring it to NULL state
         gst_element_set_state(pipeline, GST_STATE_NULL);
