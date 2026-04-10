@@ -260,7 +260,7 @@ public:
     template <typename T>
     inline void addValidator(std::string name, ExpectedValues<T> &&expectedValues)
     {
-        addValidator(name, Validator<T>::create(std::forward<ExpectedValues<T>>(expectedValues)));
+        addValidator(std::move(name), Validator<T>::create(std::forward<ExpectedValues<T>>(expectedValues)));
     }
 
     template <typename T, typename FunctionType = std::function<bool(const T &)>>

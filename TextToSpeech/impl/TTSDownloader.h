@@ -35,7 +35,7 @@ class TTSDownloader
    public:
    ~TTSDownloader();
    TTSDownloader(TTSConfiguration &config);
-   void download(TTSConfiguration config);
+   void download(const TTSConfiguration& config);
    void downloadThread();
    bool downloadFile(std::string ttsRequest);
    void saveConfiguration(std::string path);   
