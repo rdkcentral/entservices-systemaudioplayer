@@ -255,7 +255,7 @@ public:
     std::unique_ptr<DemuxerStreamFsFCC>& demuxer() { return getDemuxer(); }
     bool& streamFSEnabled() { return getStreamFSEnabled(); }
 
-    void AddRef() const override {}
+    uint32_t AddRef() const override { return 0; }
     uint32_t Release() const override { return 0; }
 
     using LinearPlaybackControl::endpoint_set_channel;
@@ -279,7 +279,7 @@ public:
 // Mock IShell
 class MockShell : public WPEFramework::PluginHost::IShell {
 public:
-    MOCK_METHOD(void, AddRef, (), (const, override));
+    MOCK_METHOD(uint32_t, AddRef, (), (const, override));
     MOCK_METHOD(uint32_t, Release, (), (const, override));
     MOCK_METHOD(void*, QueryInterface, (uint32_t id), (override));
     MOCK_METHOD(void, EnableWebServer, (const string& URL, const string& prefix), (override));
