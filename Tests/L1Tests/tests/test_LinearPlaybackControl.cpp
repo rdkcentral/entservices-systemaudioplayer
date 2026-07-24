@@ -124,6 +124,8 @@ public:
     MOCK_METHOD1(closedir, int(DIR* dirp)); 
 
     MOCK_METHOD(FILE*, fopen, (const char* pathname, const char* mode), (override));
+    MOCK_METHOD(int, fclose, (FILE* stream), (override));
+    MOCK_METHOD(char*, fgets, (char* s, int size, FILE* stream), (override));
     MOCK_METHOD(CURLcode, curl_easy_setopt, (CURL* curl, CURLoption option, void* param), (override));
     MOCK_METHOD(CURLcode, curl_easy_perform, (CURL* curl), (override));
     MOCK_METHOD(CURLcode, curl_easy_getinfo, (CURL* curl, CURLINFO info, long* value), (override));
