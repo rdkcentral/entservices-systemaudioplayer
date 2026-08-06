@@ -31,7 +31,7 @@ git clone --branch  R4.4.6 https://github.com/rdkcentral/ThunderTools.git
 
 git clone --branch R4.4.6 https://github.com/rdkcentral/Thunder.git
 
-git clone --branch main https://github.com/rdkcentral/entservices-apis.git
+git clone --branch 4.0.8 https://github.com/rdkcentral/entservices-apis.git
 
 git clone --branch feature/RDKEMW-22169 https://github.com/rdkcentral/entservices-testframework.git
 
