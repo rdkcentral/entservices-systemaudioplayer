@@ -288,6 +288,7 @@ jobs:
           -S "$GITHUB_WORKSPACE/entservices-testframework/Tests/mocks"
           -B build/mocks
           -DBUILD_SHARED_LIBS=ON
+          -DRDK_SERVICE_L2_TEST=ON
           -DCMAKE_TOOLCHAIN_FILE="${{ env.TOOLCHAIN_FILE }}"
           -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/install/usr"
           -DCMAKE_MODULE_PATH="$GITHUB_WORKSPACE/install/tools/cmake"
