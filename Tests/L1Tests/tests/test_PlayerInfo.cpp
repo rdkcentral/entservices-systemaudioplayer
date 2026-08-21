@@ -18,7 +18,7 @@ using ::testing::SetArgReferee;
 class TestablePlayerInfo : public PlayerInfo {
 public:
     using PlayerInfo::_notification;
-    void AddRef() const override {}
+    uint32_t AddRef() const override { return 0; }
     uint32_t Release() const override { return 0; }
     void InjectService(PluginHost::IShell* service, uint32_t connId) {
         _service = service;

@@ -25,7 +25,7 @@ public:
 
 class UnifiedCASManagementTestable : public UnifiedCASManagement {
 public:
-    void AddRef() const override {}
+    uint32_t AddRef() const override { return 0; }
     uint32_t Release() const override { return 0; }
 
     void set_m_player(std::shared_ptr<MediaPlayer> m_player1){
