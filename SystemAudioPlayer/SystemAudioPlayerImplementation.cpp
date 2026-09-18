@@ -207,33 +207,36 @@ namespace Plugin {
         AudioPlayer *player;
         url = parameters["url"].String(); 
         getNumberParameter("id", id);
+        
+        // Hold lock for entire player access to prevent use-after-free
         _adminLock.Lock();
          player = getObjectFromMap(id); 
-        _adminLock.Unlock();
 
          if(player != NULL) {
             string sourceType = sourceTypeToString(player->getSourceType());
             if(!std::regex_match(url, patternMap.at(sourceType))) {
                 SAPLOG_ERROR("SAP: SystemAudioPlayerImplementation Source %s and Url %s is different",sourceType.c_str(),url.c_str());
+                _adminLock.Unlock();
                 returnResponse(false);
             }
 
             if(player->getSourceType() == SourceType::FILESRC) {
                 if(!extractFileProtocol(url)) {
+                    _adminLock.Unlock();
                     returnResponse(false);
                 }
             }
 
-            _adminLock.Lock();
             if(SameModeNotPlaying(player,id)) {
-                _adminLock.Unlock();
                 player->Play(url);
+                _adminLock.Unlock();
                 returnResponse(true);
             }
             _adminLock.Unlock();
             response["message"] = "Hardware resource already acquired by session with  id "+ std::to_string(id);
             returnResponse(false);
         }
+        _adminLock.Unlock();
         returnResponse(false);
     }
 
