@@ -18,6 +18,7 @@
 **/
 
 #include "AudioPlayer.h"
+#include <algorithm>
 #include "logger.h"
 #include <gst/app/gstappsrc.h>
 #include "SecuredWebSocketClient.h"
@@ -801,6 +802,55 @@ void AudioPlayer::destroyPipeline()
 void AudioPlayer::Play(std::string url)
 {
     std::lock_guard<std::mutex> lock(m_playMutex);
+    
+    // Validate URL to prevent SSRF and local file read attacks
+    if (url.empty()) {
+        SAPLOG_ERR("SAP: Invalid URL - empty URL not allowed");
+        return;
+    }
+    
+    // Reject file:// URLs to prevent local file read
+    if (url.find("file://") == 0 || url.find("FILE://") == 0) {
+        SAPLOG_ERR("SAP: Invalid URL - file:// URLs not allowed");
+        return;
+    }
+    
+    // Reject localhost and internal network URLs to prevent SSRF
+    std::string lowerUrl = url;
+    std::transform(lowerUrl.begin(), lowerUrl.end(), lowerUrl.begin(), ::tolower);
+    
+    if (lowerUrl.find("127.0.0.1") != std::string::npos ||
+        lowerUrl.find("localhost") != std::string::npos ||
+        lowerUrl.find("::1") != std::string::npos ||
+        lowerUrl.find("0.0.0.0") != std::string::npos ||
+        lowerUrl.find("192.168.") != std::string::npos ||
+        lowerUrl.find("10.") != std::string::npos ||
+        lowerUrl.find("172.16.") != std::string::npos ||
+        lowerUrl.find("172.17.") != std::string::npos ||
+        lowerUrl.find("172.18.") != std::string::npos ||
+        lowerUrl.find("172.19.") != std::string::npos ||
+        lowerUrl.find("172.20.") != std::string::npos ||
+        lowerUrl.find("172.21.") != std::string::npos ||
+        lowerUrl.find("172.22.") != std::string::npos ||
+        lowerUrl.find("172.23.") != std::string::npos ||
+        lowerUrl.find("172.24.") != std::string::npos ||
+        lowerUrl.find("172.25.") != std::string::npos ||
+        lowerUrl.find("172.26.") != std::string::npos ||
+        lowerUrl.find("172.27.") != std::string::npos ||
+        lowerUrl.find("172.28.") != std::string::npos ||
+        lowerUrl.find("172.29.") != std::string::npos ||
+        lowerUrl.find("172.30.") != std::string::npos ||
+        lowerUrl.find("172.31.") != std::string::npos) {
+        SAPLOG_ERR("SAP: Invalid URL - internal network URLs not allowed");
+        return;
+    }
+    
+    // Only allow HTTPS URLs for security
+    if (lowerUrl.find("https://") != 0 && lowerUrl.find("http://") != 0) {
+        SAPLOG_ERR("SAP: Invalid URL - only http:// and https:// URLs allowed");
+        return;
+    }
+    
     m_url = url;
     SAPLOG_INFO("SAP: AudioPlayer Play invoked Playerid %d..URL %s\n",getObjectIdentifier(),m_url.c_str());
     if(m_pipeline)
