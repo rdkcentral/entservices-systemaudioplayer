@@ -69,6 +69,17 @@ TlsEnabled<Derived, Role>::TlsEnabled()
 template <typename Derived, typename Role>
 void TlsEnabled<Derived, Role>::setCertFileName(const std::string& certFileName)
 {
+    // Validate path to prevent attacker-controlled key material paths
+    if (certFileName.empty() || certFileName[0] == '/') {
+        LOGERR("Invalid cert file path: empty or absolute path not allowed");
+        return;
+    }
+    
+    if (certFileName.find("..") != std::string::npos) {
+        LOGERR("Invalid cert file path: path traversal sequences not allowed");
+        return;
+    }
+    
     LOGINFO("Setting cert file name to: %s", certFileName.c_str());
     certFileName_ = certFileName;
 }
@@ -76,6 +87,17 @@ void TlsEnabled<Derived, Role>::setCertFileName(const std::string& certFileName)
 template <typename Derived, typename Role>
 void TlsEnabled<Derived, Role>::setKeyFileName(const std::string& keyFileName)
 {
+    // Validate path to prevent attacker-controlled key material paths
+    if (keyFileName.empty() || keyFileName[0] == '/') {
+        LOGERR("Invalid key file path: empty or absolute path not allowed");
+        return;
+    }
+    
+    if (keyFileName.find("..") != std::string::npos) {
+        LOGERR("Invalid key file path: path traversal sequences not allowed");
+        return;
+    }
+    
     LOGINFO("Setting key file name to: %s", keyFileName.c_str());
     keyFileName_ = keyFileName;
 }
@@ -83,8 +105,24 @@ void TlsEnabled<Derived, Role>::setKeyFileName(const std::string& keyFileName)
 template <typename Derived, typename Role>
 void TlsEnabled<Derived, Role>::setCAFileNames(const std::vector<std::string>& CAFileNames)
 {
-    LOGINFO("Setting CA files names with %i files.", CAFileNames.size());
-    CAFileNames_ = CAFileNames;
+    // Validate paths to prevent attacker-controlled CA file paths
+    std::vector<std::string> validCAFiles;
+    for (const auto& caFile : CAFileNames) {
+        if (caFile.empty() || caFile[0] == '/') {
+            LOGERR("Invalid CA file path: empty or absolute path not allowed");
+            continue;
+        }
+        
+        if (caFile.find("..") != std::string::npos) {
+            LOGERR("Invalid CA file path: path traversal sequences not allowed");
+            continue;
+        }
+        
+        validCAFiles.push_back(caFile);
+    }
+    
+    LOGINFO("Setting CA files names with %i files (filtered from %i input).", validCAFiles.size(), CAFileNames.size());
+    CAFileNames_ = validCAFiles;
 }
 
 template <typename Derived, typename Role>
