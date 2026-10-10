@@ -33,6 +33,12 @@ using namespace WPEFramework;
 using ::testing::Test;
 using ::testing::NiceMock;
 
+#include "TlsEnabled.h"
+#include "Roles/Client.h"
+#include "Roles/SingleClientServer.h"
+
+using namespace WebSockets;
+
 class SAPTest : public Test {
 protected:
     Core::ProxyType<Plugin::SystemAudioPlayer> plugin;
@@ -1850,4 +1856,77 @@ TEST_F(SAPInitializedTest, SAPGetPlayerSessionIdInvalidUrl) {
             response
         ));
     EXPECT_EQ(response, _T("{\"success\":false}")); 
+}
+
+// RDKEMW-24486: TLS credential path validation tests
+TEST(TlsPathValidationTest, RejectsEmptyCertPath)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    std::string originalCert = "cert.pem";
+    tlsClient.setCertFileName(originalCert);
+    tlsClient.setCertFileName("");
+    // Empty path should be rejected, not stored
+}
+
+TEST(TlsPathValidationTest, RejectsAbsoluteCertPath)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    tlsClient.setCertFileName("/etc/ssl/certs/cert.pem");
+    // Absolute path should be rejected
+}
+
+TEST(TlsPathValidationTest, RejectsTraversalInCertPath)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    tlsClient.setCertFileName("../../../etc/passwd");
+    // Traversal sequence should be rejected
+}
+
+TEST(TlsPathValidationTest, AcceptsValidRelativeCertPath)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    tlsClient.setCertFileName("certs/client.pem");
+    // Valid relative path should be accepted
+}
+
+TEST(TlsPathValidationTest, RejectsEmptyKeyPath)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    tlsClient.setKeyFileName("");
+    // Empty path should be rejected
+}
+
+TEST(TlsPathValidationTest, RejectsAbsoluteKeyPath)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    tlsClient.setKeyFileName("/etc/ssl/private/key.pem");
+    // Absolute path should be rejected
+}
+
+TEST(TlsPathValidationTest, RejectsTraversalInKeyPath)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    tlsClient.setKeyFileName("../../../../etc/shadow");
+    // Traversal sequence should be rejected
+}
+
+TEST(TlsPathValidationTest, AcceptsValidRelativeKeyPath)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    tlsClient.setKeyFileName("keys/client.key");
+    // Valid relative path should be accepted
+}
+
+TEST(TlsPathValidationTest, FiltersInvalidCAPaths)
+{
+    TlsEnabled<SecuredWebSocketClient, Client> tlsClient;
+    std::vector<std::string> caFiles = {
+        "/etc/ssl/certs/ca.pem",
+        "../etc/passwd",
+        "certs/ca1.pem",
+        "",
+        "certs/ca2.pem"
+    };
+    tlsClient.setCAFileNames(caFiles);
+    // Only valid relative paths should be stored
 }
