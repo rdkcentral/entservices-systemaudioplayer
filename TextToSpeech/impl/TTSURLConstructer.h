@@ -34,7 +34,7 @@ class TTSURLConstructer
     public:
     ~TTSURLConstructer();
     TTSURLConstructer();
-    std::string constructURL(TTSConfiguration &config ,std::string text, bool isFallback, bool isLocal);
+    std::string constructURL(TTSConfiguration &config ,const std::string& text, bool isFallback, bool isLocal);
 
     private:
     std::string httpgetURL(TTSConfiguration &config, std::string text, bool isFallback, bool isLocal);

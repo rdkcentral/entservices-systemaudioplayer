@@ -801,7 +801,7 @@ void AudioPlayer::destroyPipeline()
 void AudioPlayer::Play(std::string url)
 {
     std::lock_guard<std::mutex> lock(m_playMutex);
-    m_url = url;
+    m_url = std::move(url);
     SAPLOG_INFO("SAP: AudioPlayer Play invoked Playerid %d..URL %s\n",getObjectIdentifier(),m_url.c_str());
     if(m_pipeline)
     {

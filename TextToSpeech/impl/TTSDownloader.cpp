@@ -56,7 +56,7 @@ TTSDownloader::~TTSDownloader()
 }
 
 
-void TTSDownloader::download(TTSConfiguration config)
+void TTSDownloader::download(const TTSConfiguration& config)
 {
     TTSLOG_INFO("TTSDownloader::download \n");
     m_objectMutex.lock();
@@ -100,7 +100,7 @@ void TTSDownloader::downloadThread()
         }
 
         TTSLOG_INFO("TTSDownloader::download going to download file from location %s\n", ttsRequest.c_str());
-        if(!downloadFile(ttsRequest))
+        if(!downloadFile(std::move(ttsRequest)))
         {
              TTSLOG_INFO("TTSDownloader::downloadFile download failed..needs re-download\n");
              m_needDownload = true; //need re-download
@@ -166,7 +166,7 @@ void TTSDownloader::saveConfiguration(std::string path)
     m_objectMutex.lock();
     m_config.saveFallbackPath(path);
     m_config.updateConfigStore();
-    m_defaultConfig.saveFallbackPath(path);
+    m_defaultConfig.saveFallbackPath(std::move(path));
     m_objectMutex.unlock();
 }
 

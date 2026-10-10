@@ -59,9 +59,9 @@ bool Client<Derived>::connect(std::string address, std::function<void(Connection
     const std::string uri = derived.addProtocolToAddress(address);
 
     LOGINFO("Connecting, uri: %s", uri.c_str());
-
-    derived.connectionInitializationCallback_ = connectionInitializationCallback;
-    derived.connectionClosedCallback_ = connectionClosedCallback;
+    
+    derived.connectionInitializationCallback_ = std::move(connectionInitializationCallback);
+    derived.connectionClosedCallback_ = std::move(connectionClosedCallback);
 
     websocketpp::lib::error_code ec;
     auto connection = derived.endpointImpl_.get_connection(uri, ec);
@@ -72,7 +72,7 @@ bool Client<Derived>::connect(std::string address, std::function<void(Connection
 
     derived.startEventLoop();
     LOGINFO("Calling connect on: %s\n", uri.c_str());
-    derived.endpointImpl_.connect(connection);
+    derived.endpointImpl_.connect(std::move(connection));
     return true;
 }
 

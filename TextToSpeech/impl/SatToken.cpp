@@ -85,13 +85,9 @@ string SatToken::getSecurityToken() {
     }
         
     string payload = "http://localhost";
-    if(payload.empty()) {
-          tokenLength = GetSecurityToken(sizeof(buffer), buffer);
-     } else {
-          int buffLength = std::min(sizeof(buffer), payload.length());
-          ::memcpy(buffer, payload.c_str(), buffLength);
-          tokenLength = GetToken(sizeof(buffer), buffLength, buffer);
-     }
+    int buffLength = std::min(sizeof(buffer), payload.length());
+    ::memcpy(buffer, payload.c_str(), buffLength);
+    tokenLength = GetToken(sizeof(buffer), buffLength, buffer);
 
      if(tokenLength > 0) {
          token.append((char*)buffer);

@@ -64,7 +64,7 @@ public:
 struct SpeechData {
     public:
         SpeechData() : client(NULL), secure(false), id(0), callsign(), text(), primVolDuck(25) {}
-        SpeechData(TTSSpeakerClient *c, uint32_t i, std::string callsign,std::string t, bool s=false,int8_t vol=25) : client(c), secure(s), id(i), callsign(callsign), text(t), primVolDuck(vol) {}
+        SpeechData(TTSSpeakerClient *c, uint32_t i, std::string callsign,std::string t, bool s=false,int8_t vol=25) : client(c), secure(s), id(i), callsign(std::move(callsign)), text(std::move(t)), primVolDuck(vol) {}
         SpeechData(const SpeechData &n) {
             client = n.client;
             id = n.id;

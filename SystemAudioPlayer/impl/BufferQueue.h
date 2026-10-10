@@ -31,7 +31,7 @@
 
 struct Buffer
 {
-    Buffer()
+    Buffer() : buff(nullptr), length(0)
     {
     }
     void fillBuffer(const void *ptr,int len);

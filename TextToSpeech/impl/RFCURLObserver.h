@@ -31,7 +31,7 @@ public:
     ~RFCURLObserver();
 
 private:
-    RFCURLObserver(){};
+    RFCURLObserver() : m_defaultConfig(nullptr) {};
     RFCURLObserver(const RFCURLObserver&) = delete;
     RFCURLObserver& operator=(const RFCURLObserver&) = delete;
 

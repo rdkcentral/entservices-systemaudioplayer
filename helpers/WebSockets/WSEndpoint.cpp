@@ -78,22 +78,35 @@ template<
 void WSEndpoint<Role, MessagingInterface, PingPong, Encryption>::closeConnection()
 {
     LOGINFO();
-    auto conn = getConnection(connectionHandler_);
-    if (!conn)
+    try    
     {
-        LOGINFO("Cant get connection (Probably connection already closed).");
-        return;
+        auto conn = getConnection(connectionHandler_);
+        if (!conn)
+        {
+            LOGINFO("Cant get connection (Probably connection already closed).");
+            return;
+        }
+        if (conn->get_state() != websocketpp::session::state::open)
+        {
+            LOGINFO("Can't close connection which is not open.");
+            return;
+        }
+
+        websocketpp::lib::error_code ec;
+        endpointImpl_.close(connectionHandler_, websocketpp::close::status::going_away, "", ec);
+        if (ec) {
+            LOGERR("Closing connection failed, reason: %s", ec.message().c_str());
+        }
     }
-    if (conn->get_state() != websocketpp::session::state::open)
+    catch (const std::exception& e)
     {
-        LOGINFO("Can't close connection which is not open.");
-        return;
+        LOGERR("Exception during connection close: %s", e.what());
     }
 
-    websocketpp::lib::error_code ec;
-    endpointImpl_.close(connectionHandler_, websocketpp::close::status::going_away, "", ec);
-    if (ec) {
-        LOGERR("Closing connection failed, reason: %s", ec.message().c_str());
+    catch (...)
+    {
+        LOGERR("Unknown exception during connection close");
+
     }
 }
 
