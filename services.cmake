@@ -35,8 +35,6 @@ add_definitions (-DHAS_API_SYSTEM)
 add_definitions (-DHAS_API_POWERSTATE)
 add_definitions(-DRDK_LOG_MILESTONE)
 
-add_definitions (-DUSE_DS)
-
 option(PLUGIN_WAREHOUSE "PLUGIN_WAREHOUSE" ON)
 option(HAS_API_HDMI_INPUT "HAS_API_HDMI_INPUT" ON)
 option(PLUGIN_COPILOT "PLUGIN_COPILOT" OFF)
