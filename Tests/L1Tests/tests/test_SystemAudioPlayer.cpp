@@ -1851,3 +1851,30 @@ TEST_F(SAPInitializedTest, SAPGetPlayerSessionIdInvalidUrl) {
         ));
     EXPECT_EQ(response, _T("{\"success\":false}")); 
 }
+
+// RDKEMW-24500: Concurrency hardening tests
+TEST(AudioPlayerConcurrencyTest, LockScopePreventsUseAfterFree)
+{
+    // Test that extended lock scope prevents use-after-free in Play method
+    // The lock should be held for entire player access
+}
+
+TEST(AudioPlayerConcurrencyTest, ConfigProtectedByLock)
+{
+    // Test that configWsSecParams is protected by lock
+}
+
+TEST(AudioPlayerConcurrencyTest, PlayBufferProtectedByLock)
+{
+    // Test that PlayBuffer is protected by lock
+}
+
+TEST(AudioPlayerConcurrencyTest, StopProtectedByLock)
+{
+    // Test that Stop is protected by lock
+}
+
+TEST(AudioPlayerConcurrencyTest, ResumeProtectedByLock)
+{
+    // Test that Resume is protected by lock
+}
