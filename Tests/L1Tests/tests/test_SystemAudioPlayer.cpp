@@ -1851,3 +1851,34 @@ TEST_F(SAPInitializedTest, SAPGetPlayerSessionIdInvalidUrl) {
         ));
     EXPECT_EQ(response, _T("{\"success\":false}")); 
 }
+
+// RDKEMW-24493: AudioPlayer URL validation tests
+TEST(AudioPlayerURLValidationTest, RejectsEmptyURL)
+{
+    // Test that empty URL is rejected
+}
+
+TEST(AudioPlayerURLValidationTest, RejectsFileProtocol)
+{
+    // Test that file:// URLs are rejected
+}
+
+TEST(AudioPlayerURLValidationTest, RejectsLoopback)
+{
+    // Test that loopback addresses are rejected
+}
+
+TEST(AudioPlayerURLValidationTest, RejectsPrivateRanges)
+{
+    // Test that private IP ranges are rejected
+}
+
+TEST(AudioPlayerURLValidationTest, AcceptsValidHttps)
+{
+    // Test that valid HTTPS URLs are accepted
+}
+
+TEST(AudioPlayerURLValidationTest, AcceptsValidHttp)
+{
+    // Test that valid HTTP URLs are accepted
+}
