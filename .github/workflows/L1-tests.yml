@@ -186,7 +186,8 @@ jobs:
           repository: rdkcentral/entservices-apis
           path: entservices-apis
           ref: ${{env.INTERFACES_REF}}
-          run: rm -rf $GITHUB_WORKSPACE/entservices-apis/jsonrpc/DTV.json
+      - name: Remove unused DTV API definition
+        run: rm -f "$GITHUB_WORKSPACE/entservices-apis/jsonrpc/DTV.json"
           
       - name: Build entservices-apis
         run: >
